@@ -54,7 +54,6 @@
         {
             client = new RestClient(Host);
             client.AddDefaultHeader("Accept","*/*");
-            client.AddDefaultHeader("Accept-Encoding", "gzip,deflate,sdch");
             client.AddDefaultHeader("App-Key", AppKey);
             client.Authenticator = new HttpBasicAuthenticator(Username, Password);
 
@@ -73,7 +72,15 @@
 
         private void PauseChecks(bool is_paused)
         {
-            request.AddParameter("paused", is_paused);
+            if(is_paused)
+            {
+                request.AddParameter("paused", "true");
+            }
+            else
+            {
+                request.AddParameter("paused", "false");
+            }
+            //request.AddParameter("paused", is_paused ? "true" : "false");
 
             var response = client.Execute(request);
 
