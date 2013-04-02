@@ -1,6 +1,8 @@
 ﻿namespace PingdomMaintenanceWindowApp
 {
+    using System;
     using System.Configuration;
+    using System.Text;
 
     using RestSharp;
 
@@ -38,7 +40,7 @@
             }
         }
 
-        private const string Host = "https://api.pingdom.com";
+        private const string Host = "https://api.pingdom.com:443";
 
         private const string Resource = "/api/2.0/checks";
 
@@ -51,7 +53,8 @@
         public PingdomMaintenanceWindow()
         {
             client = new RestClient(Host);
-            client.AddDefaultHeader("Accept-Encoding" , "gzip, compressed");
+            client.AddDefaultHeader("Accept","*/*");
+            client.AddDefaultHeader("Accept-Encoding", "gzip,deflate,sdch");
             client.AddDefaultHeader("App-Key", AppKey);
             client.Authenticator = new HttpBasicAuthenticator(Username, Password);
 
@@ -60,19 +63,18 @@
 
         public void Start()
         {
-            request.AddParameter("paused", "true");
-            //request.AddBody("paused=true");
-            PerformRequest();
+            PauseChecks(true);
         }
 
         public void Stop()
         {
-            request.AddBody("paused=false");
-            PerformRequest();
+            PauseChecks(false);
         }
 
-        private void PerformRequest()
+        private void PauseChecks(bool is_paused)
         {
+            request.AddParameter("paused", is_paused);
+
             var response = client.Execute(request);
 
             if (response.ResponseStatus == ResponseStatus.Completed)
