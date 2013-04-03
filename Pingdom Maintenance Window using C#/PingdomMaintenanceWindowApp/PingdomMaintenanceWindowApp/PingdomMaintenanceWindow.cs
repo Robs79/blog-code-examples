@@ -72,15 +72,7 @@
 
         private void PauseChecks(bool is_paused)
         {
-            if(is_paused)
-            {
-                request.AddParameter("paused", "true");
-            }
-            else
-            {
-                request.AddParameter("paused", "false");
-            }
-            //request.AddParameter("paused", is_paused ? "true" : "false");
+            request.AddParameter("paused", is_paused ? "true" : "false");
 
             var response = client.Execute(request);
 
